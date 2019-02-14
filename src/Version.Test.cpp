@@ -21,4 +21,35 @@ TEST_CASE("Semantic versions can be compared") {
     SemVer::Version const different_digits{3, 2, 1};
     REQUIRE(arbitrary_version != different_digits);
   }
+
+  SECTION("equality operator takes pre-release and build metadata in account") {
+    SemVer::Version const prereleased_some{1, 2, 3, "some"};
+    SemVer::Version const prereleased_other{1, 2, 3, "other"};
+    REQUIRE_FALSE(prereleased_some == prereleased_other);
+
+    SemVer::Version const build_meta_added{1, 2, 3, "some", "build_numba"};
+    REQUIRE_FALSE(prereleased_some == build_meta_added);
+  }
+}
+
+TEST_CASE("Printing rules for version objects") {
+  SECTION("always include the three main digits") {
+    SemVer::Version only_digits{1, 2, 3};
+    REQUIRE(only_digits.to_string() == "1.2.3");
+  }
+
+  SECTION("prerelease is hyphenated") {
+    SemVer::Version with_prerelease{1, 2, 3, "pre"};
+    REQUIRE(with_prerelease.to_string() == "1.2.3-pre");
+  }
+
+  SECTION("build meta is with prefixed by + and comes immediately without prerelease") {
+    SemVer::Version with_buildmeta{1, 2, 3, "", "build_numba"};
+    REQUIRE(with_buildmeta.to_string() == "1.2.3+build_numba");
+  }
+
+  SECTION("build meta comes after the pre is exists") {
+    SemVer::Version with_pre_and_meta{1, 2, 3, "alpha", "build_numba"};
+    REQUIRE(with_pre_and_meta.to_string() == "1.2.3-alpha+build_numba");
+  }
 }

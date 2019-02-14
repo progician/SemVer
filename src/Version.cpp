@@ -1,4 +1,5 @@
 #include "SemVer/Version.h"
+#include <sstream>
 
 namespace SemVer {
   bool operator<(Version const& lhs, Version const& rhs) noexcept {
@@ -23,7 +24,9 @@ namespace SemVer {
     return
       lhs.major == rhs.major &&
       lhs.minor == rhs.minor &&
-      lhs.patch == rhs.patch
+      lhs.patch == rhs.patch &&
+      lhs.prerelease == rhs.prerelease &&
+      lhs.build == rhs.build
     ;
   }
 
@@ -31,7 +34,9 @@ namespace SemVer {
     return
       lhs.major != rhs.major ||
       lhs.minor != rhs.minor ||
-      lhs.patch != rhs.patch
+      lhs.patch != rhs.patch ||
+      lhs.prerelease != rhs.prerelease ||
+      lhs.build != rhs.build
     ;
   }
 
@@ -39,6 +44,18 @@ namespace SemVer {
     ostr << v.major << ".";
     ostr << v.minor << ".";
     ostr << v.patch;
+    if (!v.prerelease.empty()) {
+      ostr << "-" << v.prerelease;
+    }
+    if (!v.build.empty()) {
+      ostr << "+" << v.build;
+    }
     return ostr;
+  }
+
+  std::string Version::to_string() const {
+    std::stringstream string_stream;
+    string_stream << *this;
+    return string_stream.str();
   }
 } // SemVer
