@@ -24,7 +24,7 @@ class SemVer(ConanFile):
     
     def _configure_cmake(self):
         modified_build_type = "RelWithDebInfo" \
-            if self.options.debug_info else self.build_type
+            if self.options.debug_info else self.settings.build_type
         cmake = CMake(self, build_type=modified_build_type)
         cmake.definitions["CMAKE_PROJECT_SemVer_INCLUDE"] = \
             os.path.join(self.build_folder, "conan_paths.cmake")
