@@ -15,4 +15,10 @@ TEST_CASE("Semantic versions can be compared") {
     SemVer::Version const another_one_of_the_same{1, 2, 3};
     REQUIRE(one_of_the_same == another_one_of_the_same);
   }
+
+  SECTION("non-equality is if any the main digits are different") {
+    SemVer::Version const arbitrary_version{1, 2, 3};
+    SemVer::Version const different_digits{3, 2, 1};
+    REQUIRE(arbitrary_version != different_digits);
+  }
 }

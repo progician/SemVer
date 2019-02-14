@@ -10,5 +10,7 @@ namespace SemVer {
   };
 
   bool operator<(Version const&, Version const&) noexcept;
+  bool operator==(Version const&, Version const&) noexcept;
+  bool operator!=(Version const&, Version const&) noexcept;
   std::ostream& operator<<(std::ostream&, Version const&);
 } // SemVer
