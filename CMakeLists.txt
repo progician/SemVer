@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 project(SemVer)
 
-add_library(SemVer src/Version.cpp)
+add_library(SemVer
+    src/Version.cpp
+    src/VersionRange.cpp
+)
 target_compile_features(SemVer PUBLIC cxx_std_11)
 target_include_directories(SemVer
     PUBLIC
@@ -15,7 +18,10 @@ if (ENABLE_UNITTESTS)
     add_library(CatchTestMain OBJECT src/CatchTestMain.cpp)
     target_link_libraries(CatchTestMain PUBLIC Catch2::Catch2)
     
-    add_executable(SemVer.UT src/Version.Test.cpp)
+    add_executable(SemVer.UT
+        src/Version.Test.cpp
+        src/VersionRange.Test.cpp
+    )
     target_link_libraries(SemVer.UT PRIVATE CatchTestMain SemVer)
 
     add_custom_command(
