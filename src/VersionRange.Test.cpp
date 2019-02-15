@@ -4,10 +4,10 @@
 
 TEST_CASE("Version ranges can define a list of acceptable versions") {
   SemVer::VersionRange const range{
-    SemVer::Version{1, 0, 0},
-    SemVer::Version{1, 3, 0},
-    SemVer::Version{1, 5, 0},
+    {1, 0, 0},
+    {1, 3, 0},
+    {1, 5, 0},
   };
 
-  REQUIRE(range.matches(SemVer::Version{1, 3, 0}));
+  REQUIRE(range.matches({1, 3, 0}));
 }
