@@ -17,7 +17,14 @@ namespace SemVer {
       return false;
     }
 
-    return lhs.patch < rhs.patch;
+    if (lhs.patch < rhs.patch) {
+      return true;
+    }
+    else if (rhs.patch < lhs.patch) {
+      return false;
+    }
+
+    return lhs.prerelease < rhs.prerelease;
   }
 
   bool operator==(Version const& lhs, Version const& rhs) noexcept {

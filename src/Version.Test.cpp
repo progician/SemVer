@@ -53,3 +53,12 @@ TEST_CASE("Printing rules for version objects") {
     REQUIRE(with_pre_and_meta.to_string() == "1.2.3-alpha+build_numba");
   }
 }
+
+TEST_CASE("Metadata role in version precedence") {
+  SECTION("pre-release meta data") {
+    SemVer::Version alpha_prerelease{1, 2, 3, "alpha"};
+    SECTION("takes precedence by ascending alphabetic order of identifier") {
+      REQUIRE(alpha_prerelease < SemVer::Version{1, 2, 3, "beta"});
+    }
+  }
+}
