@@ -10,4 +10,5 @@ TEST_CASE("Version ranges can define a list of acceptable versions") {
   };
 
   REQUIRE(range.matches({1, 3, 0}));
+  REQUIRE_FALSE(range.matches({2, 0, 0}));
 }
