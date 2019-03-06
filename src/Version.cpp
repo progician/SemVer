@@ -47,6 +47,11 @@ namespace SemVer {
     ;
   }
 
+
+  bool operator<=(Version const& lhs, Version const& rhs) noexcept {
+    return lhs < rhs || lhs == rhs;
+  }
+
   std::ostream& operator <<(std::ostream& ostr, SemVer::Version const& v) {
     ostr << v.major << ".";
     ostr << v.minor << ".";
