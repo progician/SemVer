@@ -10,4 +10,8 @@ namespace SemVer {
     return set_.count(version) > 0;
   }
 
+  bool Check(Version const& version, Comparator const& against) noexcept {
+    return against.operand < version;
+  }
+
 } // SemVer
