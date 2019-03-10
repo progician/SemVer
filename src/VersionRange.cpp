@@ -11,7 +11,14 @@ namespace SemVer {
   }
 
   bool Check(Version const& version, Comparator const& against) noexcept {
-    return against.operand < version;
+    switch(against.type) {
+      case Comparator::Type::Greater: return against.operand < version;
+      case Comparator::Type::GreaterEqual: return against.operand <= version;
+      case Comparator::Type::Less: return version < against.operand;
+      case Comparator::Type::LessEqual: return version <= against.operand;
+      case Comparator::Type::Equal: return version == against.operand;
+      case Comparator::Type::NotEqual: return version != against.operand;
+    }
   }
 
 } // SemVer
