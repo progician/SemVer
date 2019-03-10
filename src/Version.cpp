@@ -24,6 +24,13 @@ namespace SemVer {
       return false;
     }
 
+    if (lhs.prerelease.empty() && !rhs.prerelease.empty()) {
+      return false;
+    }
+    else if (!lhs.prerelease.empty() && rhs.prerelease.empty()) {
+      return true;
+    }
+
     return lhs.prerelease < rhs.prerelease;
   }
 

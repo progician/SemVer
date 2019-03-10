@@ -29,6 +29,7 @@ TEST_CASE("Comparators operators against constant versions at runtime") {
         SemVer::Version{3, 2, 1}
     };
     REQUIRE(SemVer::Check(SemVer::Version{1, 0, 0}, LessThan));
+    REQUIRE(SemVer::Check(SemVer::Version{3, 2, 1, "alpha"}, LessThan));
     REQUIRE_FALSE(SemVer::Check(SemVer::Version{3, 2, 1}, LessThan));
     REQUIRE_FALSE(SemVer::Check(SemVer::Version{4, 0, 0}, LessThan));
   }
@@ -50,15 +51,22 @@ TEST_CASE("Comparators operators against constant versions at runtime") {
     };
     REQUIRE(SemVer::Check(SemVer::Version{3, 2, 1}, Equal));
     REQUIRE_FALSE(SemVer::Check(SemVer::Version{4, 0, 0}, Equal));
+
+    SECTION("build meta-data is not considered for equality") {
+      REQUIRE(
+          SemVer::Check(SemVer::Version{3, 2, 1, "", "buildmeta"}, Equal)
+      );
+    }
   }
 
-  SECTION("for equal") {
+  SECTION("for not-equal") {
     SemVer::Comparator const NotEqual{
         SemVer::Comparator::Type::NotEqual,
         SemVer::Version{3, 2, 1}
     };
     REQUIRE_FALSE(SemVer::Check(SemVer::Version{3, 2, 1}, NotEqual));
     REQUIRE(SemVer::Check(SemVer::Version{4, 0, 0}, NotEqual));
+
   }
 }
 

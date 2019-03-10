@@ -1,6 +1,17 @@
 #include "SemVer/VersionRange.h"
 #include "SemVer/Version.h"
 
+namespace {
+  bool SemanticEqual(
+      SemVer::Version const& lhs, SemVer::Version const& rhs) noexcept {
+    return lhs.major == rhs.major
+        && lhs.minor == rhs.minor
+        && lhs.patch == rhs.patch
+        && lhs.prerelease == rhs.prerelease
+    ;
+  }
+}
+
 namespace SemVer {
 
   VersionRange::VersionRange(std::initializer_list<Version> versions)
@@ -16,7 +27,7 @@ namespace SemVer {
       case Comparator::Type::GreaterEqual: return against.operand <= version;
       case Comparator::Type::Less: return version < against.operand;
       case Comparator::Type::LessEqual: return version <= against.operand;
-      case Comparator::Type::Equal: return version == against.operand;
+      case Comparator::Type::Equal: return SemanticEqual(version, against.operand);
       case Comparator::Type::NotEqual: return version != against.operand;
     }
   }
