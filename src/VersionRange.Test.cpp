@@ -66,7 +66,11 @@ TEST_CASE("Comparators operators against constant versions at runtime") {
     };
     REQUIRE_FALSE(SemVer::Check(SemVer::Version{3, 2, 1}, NotEqual));
     REQUIRE(SemVer::Check(SemVer::Version{4, 0, 0}, NotEqual));
-
+    SECTION("build meta-data is not considered for equality") {
+      REQUIRE_FALSE(
+          SemVer::Check(SemVer::Version{3, 2, 1, "", "buildmeta"}, NotEqual)
+      );
+    }
   }
 }
 

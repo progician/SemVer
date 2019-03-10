@@ -28,7 +28,7 @@ namespace SemVer {
       case Comparator::Type::Less: return version < against.operand;
       case Comparator::Type::LessEqual: return version <= against.operand;
       case Comparator::Type::Equal: return SemanticEqual(version, against.operand);
-      case Comparator::Type::NotEqual: return version != against.operand;
+      case Comparator::Type::NotEqual: return !SemanticEqual(version, against.operand);
     }
   }
 
