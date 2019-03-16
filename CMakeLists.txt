@@ -32,6 +32,15 @@ if (ENABLE_UNITTESTS)
     )
 endif()
 
+option(GENERATE_DOCS "Generate code documentation with Doxygen" OFF)
+if (GENERATE_DOCS)
+    find_package(Doxygen REQUIRED)
+    doxygen_add_docs(SemVerDocs
+        include src
+        COMMENT "Generating documentation..."
+    )
+endif()
+
 install(
     TARGETS SemVer
     EXPORT SemVerTargets
