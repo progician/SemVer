@@ -8,9 +8,9 @@ TEST_CASE("Comparators operators against constant versions at runtime") {
         SemVer::Comparator::Type::Greater,
         SemVer::Version{1, 0, 0}
     };
-    REQUIRE(SemVer::Check(SemVer::Version{2, 0, 0}, GreaterThan));
-    REQUIRE_FALSE(SemVer::Check(SemVer::Version{0, 1, 0}, GreaterThan));
-    REQUIRE_FALSE(SemVer::Check(SemVer::Version{1, 0, 0}, GreaterThan));
+    REQUIRE(SemVer::Match(SemVer::Version{2, 0, 0}, GreaterThan));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{0, 1, 0}, GreaterThan));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{1, 0, 0}, GreaterThan));
   }
 
   SECTION("for greater-or-equal") {
@@ -18,9 +18,9 @@ TEST_CASE("Comparators operators against constant versions at runtime") {
         SemVer::Comparator::Type::GreaterEqual,
         SemVer::Version{1, 0, 0}
     };
-    REQUIRE(SemVer::Check(SemVer::Version{1, 0, 0}, GreaterEqual));
-    REQUIRE(SemVer::Check(SemVer::Version{2, 0, 0}, GreaterEqual));
-    REQUIRE_FALSE(SemVer::Check(SemVer::Version{0, 1, 0}, GreaterEqual));
+    REQUIRE(SemVer::Match(SemVer::Version{1, 0, 0}, GreaterEqual));
+    REQUIRE(SemVer::Match(SemVer::Version{2, 0, 0}, GreaterEqual));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{0, 1, 0}, GreaterEqual));
   }
 
   SECTION("for less-than") {
@@ -28,10 +28,10 @@ TEST_CASE("Comparators operators against constant versions at runtime") {
         SemVer::Comparator::Type::Less,
         SemVer::Version{3, 2, 1}
     };
-    REQUIRE(SemVer::Check(SemVer::Version{1, 0, 0}, LessThan));
-    REQUIRE(SemVer::Check(SemVer::Version{3, 2, 1, "alpha"}, LessThan));
-    REQUIRE_FALSE(SemVer::Check(SemVer::Version{3, 2, 1}, LessThan));
-    REQUIRE_FALSE(SemVer::Check(SemVer::Version{4, 0, 0}, LessThan));
+    REQUIRE(SemVer::Match(SemVer::Version{1, 0, 0}, LessThan));
+    REQUIRE(SemVer::Match(SemVer::Version{3, 2, 1, "alpha"}, LessThan));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{3, 2, 1}, LessThan));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{4, 0, 0}, LessThan));
   }
 
   SECTION("for less-equal") {
@@ -39,9 +39,9 @@ TEST_CASE("Comparators operators against constant versions at runtime") {
         SemVer::Comparator::Type::LessEqual,
         SemVer::Version{3, 2, 1}
     };
-    REQUIRE(SemVer::Check(SemVer::Version{1, 0, 0}, LessOrEqual));
-    REQUIRE(SemVer::Check(SemVer::Version{3, 2, 1}, LessOrEqual));
-    REQUIRE_FALSE(SemVer::Check(SemVer::Version{4, 0, 0}, LessOrEqual));
+    REQUIRE(SemVer::Match(SemVer::Version{1, 0, 0}, LessOrEqual));
+    REQUIRE(SemVer::Match(SemVer::Version{3, 2, 1}, LessOrEqual));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{4, 0, 0}, LessOrEqual));
   }
 
   SECTION("for equal") {
@@ -49,12 +49,12 @@ TEST_CASE("Comparators operators against constant versions at runtime") {
         SemVer::Comparator::Type::Equal,
         SemVer::Version{3, 2, 1}
     };
-    REQUIRE(SemVer::Check(SemVer::Version{3, 2, 1}, Equal));
-    REQUIRE_FALSE(SemVer::Check(SemVer::Version{4, 0, 0}, Equal));
+    REQUIRE(SemVer::Match(SemVer::Version{3, 2, 1}, Equal));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{4, 0, 0}, Equal));
 
     SECTION("build meta-data is not considered for equality") {
       REQUIRE(
-          SemVer::Check(SemVer::Version{3, 2, 1, "", "buildmeta"}, Equal)
+          SemVer::Match(SemVer::Version{3, 2, 1, "", "buildmeta"}, Equal)
       );
     }
   }
@@ -68,7 +68,7 @@ TEST_CASE("Comparators can be composed into comparator sets"
       SemVer::Comparator{Type::Greater, SemVer::Version{1, 0, 0}},
       SemVer::Comparator{Type::LessEqual, SemVer::Version{2, 0, 0}},
   };
-  REQUIRE(SemVer::Check(SemVer::Version{1, 5}, Interval));
+  REQUIRE(SemVer::Match(SemVer::Version{1, 5}, Interval));
 }
 
 
@@ -84,7 +84,7 @@ TEST_CASE("Version ranges composed of one or more comparator sets") {
           SemVer::Comparator{Type::LessEqual, SemVer::Version{4, 0, 0}},
       },
   };
-  REQUIRE(SemVer::Check(SemVer::Version{1, 5}, SimpleVersionRange));
-  REQUIRE_FALSE(SemVer::Check(SemVer::Version{2, 5}, SimpleVersionRange));
-  REQUIRE(SemVer::Check(SemVer::Version{3, 5}, SimpleVersionRange));
+  REQUIRE(SemVer::Match(SemVer::Version{1, 5}, SimpleVersionRange));
+  REQUIRE_FALSE(SemVer::Match(SemVer::Version{2, 5}, SimpleVersionRange));
+  REQUIRE(SemVer::Match(SemVer::Version{3, 5}, SimpleVersionRange));
 }

@@ -17,7 +17,7 @@ namespace {
 }
 
 namespace SemVer {
-  bool Check(Version const& version, Comparator const& against) noexcept {
+  bool Match(Version const& version, Comparator const& against) noexcept {
     switch(against.type) {
       case Comparator::Type::Greater: return against.operand < version;
       case Comparator::Type::GreaterEqual: return against.operand <= version;
@@ -28,18 +28,18 @@ namespace SemVer {
   }
 
 
-  bool Check(Version const& version, ComparatorSet const& against) noexcept {
+  bool Match(Version const& version, ComparatorSet const& against) noexcept {
     return std::all_of(
         std::begin(against), std::end(against),
-        [&version](auto const& comparator) { return Check(version, comparator); }
+        [&version](auto const& comparator) { return Match(version, comparator); }
     );
   }
 
 
-  bool Check(Version const& version, VersionRange const& against) noexcept {
+  bool Match(Version const& version, VersionRange const& against) noexcept {
     return std::any_of(
         std::begin(against), std::end(against),
-        [&version](auto const& cset) { return Check(version, cset); }
+        [&version](auto const& cset) { return Match(version, cset); }
     );
   }
 } // SemVer
