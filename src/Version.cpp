@@ -81,7 +81,7 @@ namespace SemVer {
   }
 
   Version From(std::string const& str) {
-    const std::regex parser(R"((\d*)(\.(\d*))?(\.(\d*))?)");
+    const std::regex parser(R"((\d*)(\.(\d*))?(\.(\d*))?(-([a-zA-Z][\dA-Za-z]*))?)");
     std::smatch parts;
     if (!std::regex_match(str, parts, parser) || parts.size() < 2) {
       throw std::runtime_error("invalid version range syntax!");
@@ -90,6 +90,6 @@ namespace SemVer {
     const int major = std::stoi(parts[1]);
     const int minor = !parts[3].str().empty() ? std::stoi(parts[3]) : 0;
     const int patch = !parts[5].str().empty() ? std::stoi(parts[5]) : 0;
-    return {major, minor, patch};
+    return {major, minor, patch, parts[7].str()};
   }
 } // SemVer
