@@ -55,6 +55,12 @@ namespace SemVer {
       else if (str[0] == '=') {
         return {Comparator::Type::Equal, From(str.substr(1))};
       }
+      if (str[0] == '<') {
+        if (str[1] == '=') {
+          return {Comparator::Type::LessEqual, From(str.substr(2))};
+        }
+        return {Comparator::Type::Less, From(str.substr(1))};
+      }
       return {Comparator::Type::Equal, From(str)};
     }
   }

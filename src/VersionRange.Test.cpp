@@ -111,4 +111,18 @@ TEST_CASE("Version ranges can be parsed up from strings by the following simple"
     REQUIRE(SemVer::Match(SemVer::Version{1, 2, 3}, SemVer::RangeFrom("=1.2.3")));
     REQUIRE(SemVer::Match(SemVer::Version{2, 3, 1}, SemVer::RangeFrom("2.3.1")));
   }
+
+  SECTION("less-than denoted with <VERSION") {
+    auto const under_three = SemVer::RangeFrom("<3.0.0");
+    REQUIRE(SemVer::Match(SemVer::Version{1, 1, 0}, under_three));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{10, 1, 0}, under_three));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{3, 0, 0}, under_three));
+  }
+
+  SECTION("less-equal denoted with <=VERSION") {
+    auto const under_three = SemVer::RangeFrom("<=3.0.0");
+    REQUIRE(SemVer::Match(SemVer::Version{1, 1, 0}, under_three));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{10, 1, 0}, under_three));
+    REQUIRE(SemVer::Match(SemVer::Version{3, 0, 0}, under_three));
+  }
 }
