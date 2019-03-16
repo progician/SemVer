@@ -44,17 +44,24 @@ namespace SemVer {
   }
 
 
-  VersionRange RangeFrom(std::string const& str) {
-    if (str[0] == '>') {
-      if (str[1] == '=') {
-        return {{Comparator{Comparator::Type::GreaterEqual, From(str.substr(2))}}};
+  namespace {
+    Comparator ComparatorFrom(std::string const& str) {
+      if (str[0] == '>') {
+        if (str[1] == '=') {
+          return {Comparator::Type::GreaterEqual, From(str.substr(2))};
+        }
+        return {Comparator::Type::Greater, From(str.substr(1))};
       }
-      return {{Comparator{Comparator::Type::Greater, From(str.substr(1))}}};
-    }
-    else if (str[0] == '=') {
-      return {{Comparator{Comparator::Type::Equal, From(str.substr(1))}}};
-    }
+      else if (str[0] == '=') {
+        return {Comparator::Type::Equal, From(str.substr(1))};
+      }
 
-    throw std::invalid_argument{"unable to parse version range expression"};
+      throw std::invalid_argument{"unable to parse version range expression"};
+    }
+  }
+
+
+  VersionRange RangeFrom(std::string const& str) {
+    return {{ComparatorFrom(str)}};
   }
 } // SemVer
