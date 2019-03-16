@@ -109,5 +109,6 @@ TEST_CASE("Version ranges can be parsed up from strings by the following simple"
 
   SECTION("equality denoted with =VERSION or just VERSION") {
     REQUIRE(SemVer::Match(SemVer::Version{1, 2, 3}, SemVer::RangeFrom("=1.2.3")));
+    REQUIRE(SemVer::Match(SemVer::Version{2, 3, 1}, SemVer::RangeFrom("2.3.1")));
   }
 }

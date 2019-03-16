@@ -55,8 +55,7 @@ namespace SemVer {
       else if (str[0] == '=') {
         return {Comparator::Type::Equal, From(str.substr(1))};
       }
-
-      throw std::invalid_argument{"unable to parse version range expression"};
+      return {Comparator::Type::Equal, From(str)};
     }
   }
 
