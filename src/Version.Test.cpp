@@ -65,12 +65,43 @@ TEST_CASE("Metadata role in version precedence") {
 
 
 TEST_CASE("Version object can be parsed up from strings") {
-  REQUIRE(SemVer::From("0.0.4") == SemVer::Version{0, 0, 4});
-  REQUIRE(SemVer::From("1.2.3") == SemVer::Version{1, 2, 3});
-  REQUIRE(SemVer::From("10.20.30") == SemVer::Version{10, 20, 30});
+  SECTION("plain version numbers are parsed") {
+    CHECK(SemVer::From("0.0.4") == SemVer::Version{0, 0, 4});
+    CHECK(SemVer::From("1.2.3") == SemVer::Version{1, 2, 3});
+    CHECK(SemVer::From("10.20.30") == SemVer::Version{10, 20, 30});
+    CHECK(SemVer::From("1.0.0") == SemVer::Version{1, 0, 0});
+    CHECK(SemVer::From("2.0.0") == SemVer::Version{2, 0, 0});
+    CHECK(SemVer::From("1.1.7") == SemVer::Version{1, 1, 7});
+  }
 
-  REQUIRE(SemVer::From("1") == SemVer::Version{1, 0, 0});
-  REQUIRE(SemVer::From("1.2") == SemVer::Version{1, 2, 0});
+  SECTION("incomplete version numbers are extended to zero for the missing digit") {
+    CHECK(SemVer::From("1") == SemVer::Version{1, 0, 0});
+    CHECK(SemVer::From("1.2") == SemVer::Version{1, 2, 0});
+  }
 
-  REQUIRE(SemVer::From("1.1.2-prerelease") == SemVer::Version{1, 1, 2, "prerelease"});
+  SECTION("version numbers with pre-release tags in them") {
+    CHECK(SemVer::From("1.1.2-prerelease") == SemVer::Version{1, 1, 2, "prerelease"});
+    CHECK(SemVer::From("1.0.0-alpha") == SemVer::Version{1, 0, 0, "alpha"});
+    CHECK(SemVer::From("1.0.0-beta") == SemVer::Version{1, 0, 0, "beta"});
+    CHECK(SemVer::From("1.0.0-alpha.beta") == SemVer::Version{1, 0, 0, "alpha.beta"});
+    CHECK(SemVer::From("1.0.0-alpha.beta.1") == SemVer::Version{1, 0, 0, "alpha.beta.1"});
+    CHECK(SemVer::From("1.0.0-alpha0.valid") == SemVer::Version{1, 0, 0, "alpha0.valid"});
+    CHECK(SemVer::From("1.0.0-alpha.0valid") == SemVer::Version{1, 0, 0, "alpha.0valid"});
+    CHECK(SemVer::From("2.0.1-alpha.1227") == SemVer::Version{2, 0, 1, "alpha.1227"});
+  }
+
+  SECTION("version number with only build meta in them") {
+    CHECK(SemVer::From("1.1.2+meta") == SemVer::Version{1, 1, 2, "", "meta"});
+    CHECK(SemVer::From("1.1.2+meta-valid") == SemVer::Version{1, 1, 2, "", "meta-valid"});
+  }
+
+  SECTION("version numbers with both pre-release and build meta") {
+    CHECK(SemVer::From("1.1.2-prerelease+meta") == SemVer::Version{1, 1, 2, "prerelease", "meta"});
+    CHECK(SemVer::From("1.0.0-rc.1+build.1") == SemVer::Version{1, 0, 0, "rc.1", "build.1"});
+    CHECK(SemVer::From("2.0.0-rc.1+build.123") == SemVer::Version{2, 0, 0, "rc.1", "build.123"});
+    CHECK(SemVer::From("1.0.0-alpha-a.b-c-somethinglong+build.1-aef.1-its-okay") == SemVer::Version{1, 0, 0, "alpha-a.b-c-somethinglong", "build.1-aef.1-its-okay"});
+    CHECK(SemVer::From("1.2.3----RC-SNAPSHOT.12.9.1--.12+788") == SemVer::Version{1, 2, 3, "---RC-SNAPSHOT.12.9.1--.12", "788"});
+    CHECK(SemVer::From("1.2.3----R-S.12.9.1--.12+meta") == SemVer::Version{1, 2, 3, "---R-S.12.9.1--.12", "meta"});
+    CHECK(SemVer::From("1.0.0+0.build.1-rc.10000aaa-kk-0.1") == SemVer::Version{1, 0, 0, "", "0.build.1-rc.10000aaa-kk-0.1"});
+  }
 }
