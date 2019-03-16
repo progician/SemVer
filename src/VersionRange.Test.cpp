@@ -126,3 +126,29 @@ TEST_CASE("Version ranges can be parsed up from strings by the following simple"
     REQUIRE(SemVer::Match(SemVer::Version{3, 0, 0}, under_three));
   }
 }
+
+TEST_CASE("Version ranges expressions separated by spaces are forming a"
+          " comparator set."
+) {
+  auto const one_to_three = SemVer::RangeFrom(">=1.0.0 <=3.0.0");
+  REQUIRE(SemVer::Match(SemVer::From("1.0.0"), one_to_three));
+  REQUIRE(SemVer::Match(SemVer::From("1.5.0"), one_to_three));
+  REQUIRE(SemVer::Match(SemVer::From("3.0.0"), one_to_three));
+  REQUIRE_FALSE(SemVer::Match(SemVer::From("0.9.0"), one_to_three));
+  REQUIRE_FALSE(SemVer::Match(SemVer::From("3.9.0"), one_to_three));
+}
+
+TEST_CASE("Range can be composed of multiple comparator sets delimited by ||") {
+  auto const one_or_three = SemVer::RangeFrom("=1.0.0||=3.0.0");
+  REQUIRE(SemVer::Match(SemVer::From("1.0.0"), one_or_three));
+  REQUIRE_FALSE(SemVer::Match(SemVer::From("1.5.0"), one_or_three));
+  REQUIRE(SemVer::Match(SemVer::From("3.0.0"), one_or_three));
+}
+
+
+TEST_CASE("The || delimiter in version ranges can be surrounded with whitespace") {
+  auto const one_or_three = SemVer::RangeFrom("=1.0.0\t       ||\t\t    \t=3.0.0");
+  REQUIRE(SemVer::Match(SemVer::From("1.0.0"), one_or_three));
+  REQUIRE_FALSE(SemVer::Match(SemVer::From("1.5.0"), one_or_three));
+  REQUIRE(SemVer::Match(SemVer::From("3.0.0"), one_or_three));
+}

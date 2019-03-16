@@ -2,6 +2,7 @@
 #include "SemVer/Version.h"
 
 #include <algorithm>
+#include <sstream>
 
 namespace {
   bool SemanticEqual(
@@ -63,10 +64,46 @@ namespace SemVer {
       }
       return {Comparator::Type::Equal, From(str)};
     }
+
+    ComparatorSet ComparatorSetFrom(std::string str) {
+      ComparatorSet result;
+      std::istringstream sstr(std::move(str));
+      std::transform(
+          std::istream_iterator<std::string>(sstr),
+          std::istream_iterator<std::string>(),
+          std::back_inserter(result),
+          ComparatorFrom
+      );
+      return result;
+    }
+
+
+    std::vector<std::string> Split(std::string str, std::string const& delim) {
+      std::vector<std::string> result;
+      std::string::size_type lp = 0;
+      std::string::size_type pos = std::string::npos;
+      for (
+          pos = str.find(delim);
+          pos != std::string::npos;
+          lp = pos + delim.size(), pos = str.find(delim, lp)
+      ) {
+        std::string const part = str.substr(lp, pos - lp);
+        result.push_back(part);
+      }
+      result.push_back(str.substr(lp));
+      return result;
+    }
   }
 
 
   VersionRange RangeFrom(std::string const& str) {
-    return {{ComparatorFrom(str)}};
+    auto const parts = Split(str, "||");
+    VersionRange version_range;
+    std::transform(
+        std::begin(parts), std::end(parts),
+        std::back_inserter(version_range),
+        ComparatorSetFrom
+    );
+    return version_range;
   }
 } // SemVer
