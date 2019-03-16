@@ -105,3 +105,26 @@ TEST_CASE("Version object can be parsed up from strings") {
     CHECK(SemVer::From("1.0.0+0.build.1-rc.10000aaa-kk-0.1") == SemVer::Version{1, 0, 0, "", "0.build.1-rc.10000aaa-kk-0.1"});
   }
 }
+
+
+TEST_CASE("When trying to parse invalid SemVer version, std::invalid_argument"
+          " exception is thrown."
+) {
+  CHECK_THROWS_AS(SemVer::From("+invalid"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("-invalid"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("-invalid+invalid"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("-invalid.01"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("alpha"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("alpha.beta"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("alpha.beta.1"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("alpha.1"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("alpha+beta"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("alpha_beta"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("alpha."), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("alpha.."), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("beta"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("1.2.3.4.5.6.7.8.9"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("-1.2.3"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("a.b.c"), std::invalid_argument);
+  CHECK_THROWS_AS(SemVer::From("a.b.c-d+e"), std::invalid_argument);
+}

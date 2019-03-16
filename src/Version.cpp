@@ -84,7 +84,7 @@ namespace SemVer {
     const std::regex parser(R"((\d*)(\.(\d*))?(\.(\d*))?(-([a-zA-Z0-9\-][\dA-Za-z\-\.]*))?(\+([a-zA-Z0-9][\dA-Za-z\-\.]*))?)");
     std::smatch parts;
     if (!std::regex_match(str, parts, parser) || parts.size() < 2) {
-      throw std::runtime_error("invalid version range syntax!");
+      throw std::invalid_argument("invalid version range syntax!");
     }
 
     const int major = std::stoi(parts[1]);
