@@ -21,4 +21,8 @@ namespace SemVer {
   bool operator<=(Version const&, Version const&) noexcept;
   bool operator!=(Version const&, Version const&) noexcept;
   std::ostream& operator<<(std::ostream&, Version const&);
+
+  /// Parsing up a string from a string. Failing to do so, throws
+  /// runtime exception
+  Version From(std::string const&);
 } // SemVer

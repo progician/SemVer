@@ -62,3 +62,9 @@ TEST_CASE("Metadata role in version precedence") {
     }
   }
 }
+
+
+TEST_CASE("Version object can be parsed up from strings") {
+  REQUIRE(SemVer::From("1.2.3") == SemVer::Version{1, 2, 3});
+  REQUIRE(SemVer::From("2.3.1") == SemVer::Version{2, 3, 1});
+}
