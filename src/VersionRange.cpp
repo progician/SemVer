@@ -42,4 +42,16 @@ namespace SemVer {
         [&version](auto const& cset) { return Match(version, cset); }
     );
   }
+
+
+  VersionRange RangeFrom(std::string const& str) {
+    if (str[0] == '>') {
+      if (str[1] == '=') {
+        return {{Comparator{Comparator::Type::GreaterEqual, {1, 0, 0}}}};
+      }
+      return {{Comparator{Comparator::Type::Greater, {1, 0, 0}}}};
+    }
+
+    throw std::invalid_argument{"unable to parse version range expression"};
+  }
 } // SemVer

@@ -88,3 +88,21 @@ TEST_CASE("Version ranges composed of one or more comparator sets") {
   REQUIRE_FALSE(SemVer::Match(SemVer::Version{2, 5}, SimpleVersionRange));
   REQUIRE(SemVer::Match(SemVer::Version{3, 5}, SimpleVersionRange));
 }
+
+
+TEST_CASE("Version ranges can be parsed up from strings by the following simple"
+          " rules"
+) {
+  SECTION("greater-than denoted with >VERSION") {
+    auto const over_one = SemVer::RangeFrom(">1.0.0");
+    REQUIRE(SemVer::Match(SemVer::Version{1, 1, 0}, over_one));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{0, 1, 0}, over_one));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{1, 0, 0}, over_one));
+  }
+  SECTION("greater-than denoted with >=VERSION") {
+    auto const greater_equal_one = SemVer::RangeFrom(">=1.0.0");
+    REQUIRE(SemVer::Match(SemVer::Version{1, 1, 0}, greater_equal_one));
+    REQUIRE_FALSE(SemVer::Match(SemVer::Version{0, 1, 0}, greater_equal_one));
+    REQUIRE(SemVer::Match(SemVer::Version{1, 0, 0}, greater_equal_one));
+  }
+}

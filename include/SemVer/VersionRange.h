@@ -35,4 +35,8 @@ namespace SemVer {
   bool Match(Version const&, Comparator const&) noexcept;
   bool Match(Version const&, ComparatorSet const&) noexcept;
   bool Match(Version const&, VersionRange const&) noexcept;
+
+  /// Parses up the string into a version range object. If the expression is not
+  /// valid, it throws a std::invalid_argument exception.
+  VersionRange RangeFrom(std::string const&);
 } // SemVer
