@@ -1,5 +1,6 @@
 #include "SemVer/Version.h"
 #include <sstream>
+#include <iostream>
 #include <regex>
 
 namespace SemVer {
@@ -80,15 +81,15 @@ namespace SemVer {
   }
 
   Version From(std::string const& str) {
-    const std::regex parser(R"((\d*)\.(\d*)\.(\d*))");
+    const std::regex parser(R"((\d*)(\.(\d*))?(\.(\d*))?)");
     std::smatch parts;
     if (!std::regex_match(str, parts, parser) || parts.size() < 2) {
       throw std::runtime_error("invalid version range syntax!");
     }
 
     const int major = std::stoi(parts[1]);
-    const int minor = parts.size() > 1 ? std::stoi(parts[2]) : 0;
-    const int patch = parts.size() > 2 ? std::stoi(parts[3]) : 0;
+    const int minor = !parts[3].str().empty() ? std::stoi(parts[3]) : 0;
+    const int patch = !parts[5].str().empty() ? std::stoi(parts[5]) : 0;
     return {major, minor, patch};
   }
 } // SemVer

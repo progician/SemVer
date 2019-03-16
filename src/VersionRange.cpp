@@ -5,7 +5,9 @@
 
 namespace {
   bool SemanticEqual(
-      SemVer::Version const& lhs, SemVer::Version const& rhs) noexcept {
+      SemVer::Version const& lhs,
+      SemVer::Version const& rhs
+  ) noexcept {
     return lhs.major == rhs.major
         && lhs.minor == rhs.minor
         && lhs.patch == rhs.patch
