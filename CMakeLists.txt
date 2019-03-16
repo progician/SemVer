@@ -6,7 +6,7 @@ add_library(SemVer
     src/Version.cpp
     src/VersionRange.cpp
 )
-target_compile_features(SemVer PUBLIC cxx_std_11)
+target_compile_features(SemVer PUBLIC cxx_std_14)
 target_include_directories(SemVer
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

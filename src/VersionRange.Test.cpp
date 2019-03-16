@@ -58,29 +58,33 @@ TEST_CASE("Comparators operators against constant versions at runtime") {
       );
     }
   }
-
-  SECTION("for not-equal") {
-    SemVer::Comparator const NotEqual{
-        SemVer::Comparator::Type::NotEqual,
-        SemVer::Version{3, 2, 1}
-    };
-    REQUIRE_FALSE(SemVer::Check(SemVer::Version{3, 2, 1}, NotEqual));
-    REQUIRE(SemVer::Check(SemVer::Version{4, 0, 0}, NotEqual));
-    SECTION("build meta-data is not considered for equality") {
-      REQUIRE_FALSE(
-          SemVer::Check(SemVer::Version{3, 2, 1, "", "buildmeta"}, NotEqual)
-      );
-    }
-  }
 }
 
-TEST_CASE("Version ranges can define a list of acceptable versions") {
-  SemVer::VersionRange const range{
-    {1, 0, 0},
-    {1, 3, 0},
-    {1, 5, 0},
-  };
 
-  REQUIRE(range.matches({1, 3, 0}));
-  REQUIRE_FALSE(range.matches({2, 0, 0}));
+TEST_CASE("Comparators can be composed into comparator sets"
+          "which joined by intersection") {
+  using Type = SemVer::Comparator::Type;
+  SemVer::ComparatorSet const Interval{
+      SemVer::Comparator{Type::Greater, SemVer::Version{1, 0, 0}},
+      SemVer::Comparator{Type::LessEqual, SemVer::Version{2, 0, 0}},
+  };
+  REQUIRE(SemVer::Check(SemVer::Version{1, 5}, Interval));
+}
+
+
+TEST_CASE("Version ranges composed of one or more comparator sets") {
+  using Type = SemVer::Comparator::Type;
+  SemVer::VersionRange const SimpleVersionRange{
+      SemVer::ComparatorSet{
+          SemVer::Comparator{Type::Greater, SemVer::Version{1, 0, 0}},
+          SemVer::Comparator{Type::LessEqual, SemVer::Version{2, 0, 0}},
+      },
+      SemVer::ComparatorSet{
+          SemVer::Comparator{Type::Greater, SemVer::Version{3, 0, 0}},
+          SemVer::Comparator{Type::LessEqual, SemVer::Version{4, 0, 0}},
+      },
+  };
+  REQUIRE(SemVer::Check(SemVer::Version{1, 5}, SimpleVersionRange));
+  REQUIRE_FALSE(SemVer::Check(SemVer::Version{2, 5}, SimpleVersionRange));
+  REQUIRE(SemVer::Check(SemVer::Version{3, 5}, SimpleVersionRange));
 }

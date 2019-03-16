@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <set>
 #include <utility>
+#include <vector>
 
 namespace SemVer {
 
@@ -15,7 +16,6 @@ namespace SemVer {
       Less,
       LessEqual,
       Equal,
-      NotEqual,
     };
 
     Type const type;
@@ -26,14 +26,10 @@ namespace SemVer {
     Comparator(Type t, Version&& op)
     : type{t}, operand{std::forward<Version>(op)} {}
   };
+  using ComparatorSet = std::vector<Comparator>;
+  using VersionRange = std::vector<ComparatorSet>;
+
   bool Check(Version const&, Comparator const&) noexcept;
-
-  class VersionRange {
-    std::set<Version> set_;
-
-  public:
-    VersionRange(std::initializer_list<Version>);
-    bool matches(Version const&) const;
-  };
-
+  bool Check(Version const&, ComparatorSet const&) noexcept;
+  bool Check(Version const&, VersionRange const&) noexcept;
 } // SemVer
