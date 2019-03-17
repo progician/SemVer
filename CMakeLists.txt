@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.13)
 project(SemVer)
 
 add_library(SemVer
-    src/Interval.cpp
     src/Version.cpp
     src/VersionRange.cpp
 )
@@ -20,7 +19,6 @@ if (ENABLE_UNITTESTS)
     target_link_libraries(CatchTestMain PUBLIC Catch2::Catch2)
     
     add_executable(SemVer.UT
-        src/Interval.Test.cpp
         src/Version.Test.cpp
         src/VersionRange.Test.cpp
     )
