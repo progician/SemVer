@@ -39,8 +39,25 @@ if (GENERATE_DOCS)
     )
 endif()
 
+
+add_executable(semver-cl src/SemVerCL.cpp)
+
+option(ENABLE_TESTS "Exposes the black-box test suite" ON)
+if (ENABLE_TESTS)
+    find_package(Python REQUIRED)
+    enable_testing()
+    function(add_py_test TEST_NAME TEST_SCRIPT)
+        add_test(
+            NAME ${TEST_NAME}
+            COMMAND Python::Interpreter ${CMAKE_CURRENT_SOURCE_DIR}/${TEST_SCRIPT} --semver-cli-exec=$<TARGET_FILE:semver-cl>
+        )
+    endfunction()
+
+    add_py_test(command_line_options test/cli_options.py)
+endif()
+
 install(
-    TARGETS SemVer
+    TARGETS SemVer semver-cl
     EXPORT SemVerTargets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
