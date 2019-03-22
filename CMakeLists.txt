@@ -41,6 +41,7 @@ endif()
 
 
 add_executable(semver-cl src/SemVerCL.cpp)
+target_compile_features(semver-cl PRIVATE cxx_std_14)
 
 option(ENABLE_TESTS "Exposes the black-box test suite" ON)
 if (ENABLE_TESTS)
