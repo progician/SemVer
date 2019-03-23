@@ -60,6 +60,7 @@ if (ENABLE_TESTS)
     endfunction()
 
     add_py_test(command_line_options test/cli_options.py)
+    add_py_test(ordering_by_precedence test/ordering_by_precedence.py)
 endif()
 
 install(

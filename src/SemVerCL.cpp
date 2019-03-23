@@ -24,7 +24,11 @@ namespace {
            << "    -h, --help" << std::endl
            << "        Print this help screen." << std::endl
            << "    -v, --version" << std::endl
-           << "        Print the version number of SemVer." << std::endl;
+           << "        Print the version number of SemVer." << std::endl
+           << "commands:" << std::endl
+           << "    order [ARGS]" << std::endl
+           << "        sort the rest of the arguments in precedence order or the STDIN" << std::endl
+    ;
   }
 }
 
