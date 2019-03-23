@@ -34,6 +34,13 @@ def _exec_cli(args):
     error_lines = str(completed.stderr).split('\n')
     return completed.returncode, output_lines, error_lines
 
+def _find_in_any_lines(pattern, lines):
+    for l in lines:
+        if re.search(pattern, l) is not None:
+            return True
+    return False
+
+
 class CommandLineOptions(unittest.TestCase):
     def test_when_running_no_option_then_prints_usage(self):
         exit_code, _, error_lines = _exec_cli([])
@@ -43,13 +50,8 @@ class CommandLineOptions(unittest.TestCase):
     def test_when_calling_with_help_prints_options(self):
         exit_code, output_lines, _ = _exec_cli(["--help"])
         self.assertEqual(exit_code, 0)
-        help_pattern = re.compile("--help")
-        found = False
-        for l in output_lines:
-           if re.search(help_pattern, l) is not None:
-               found = True
-               break
-        self.assertTrue(found)
+        self.assertTrue(_find_in_any_lines(re.compile("--help"), output_lines))
+        self.assertTrue(_find_in_any_lines(re.compile("--version"), output_lines))
 
     def test_returns_version(self):
         exit_code, output_lines, _ = _exec_cli(["--version"])

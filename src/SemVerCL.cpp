@@ -3,14 +3,31 @@
 #include <string>
 #include <utility>
 
+#include "SemVer/Version.h"
 #include "SemVer/VersionNumbers.h"
+
+static const SemVer::Version SemVerProjectVersion{
+  SemVer::VersionMajor, SemVer::VersionMinor, SemVer::VersionPatch
+};
 
 namespace {
   using ArgumentRange = std::pair<const char**, const char**>;
   bool HasOption(ArgumentRange args, const char* option) {
     return std::find(args.first, args.second, std::string(option)) != args.second;
   }
+
+  void PrintUsage(std::string const& executable_name, std::ostream& target) {
+    target << "semver-cl " << SemVerProjectVersion << std::endl
+           << "  Simple command line client front end for semantic version processing." << std::endl
+           << "usage: " << executable_name << " [OPTS] COMMAND [ARGS]" << std::endl
+           << "options:" << std::endl
+           << "    -h, --help" << std::endl
+           << "        Print this help screen." << std::endl
+           << "    -v, --version" << std::endl
+           << "        Print the version number of SemVer." << std::endl;
+  }
 }
+
 
 int main(int argc, const char* argv[]) {
   ArgumentRange sys_args(argv, argv + argc);
@@ -20,7 +37,7 @@ int main(int argc, const char* argv[]) {
   }
 
   if (HasOption(sys_args, "--help")) {
-    std::cout << "you called --help" << std::endl;
+    PrintUsage(argv[0], std::cout);
     return 0;
   }
 
