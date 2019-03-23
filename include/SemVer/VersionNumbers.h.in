@@ -1,0 +1,7 @@
+#pragma once
+
+namespace SemVer {
+  constexpr int VersionMajor = @PROJECT_VERSION_MAJOR@;
+  constexpr int VersionMinor = @PROJECT_VERSION_MINOR@;
+  constexpr int VersionPatch = @PROJECT_VERSION_PATCH@;
+} // SemVer

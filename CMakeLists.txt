@@ -1,14 +1,18 @@
 cmake_minimum_required(VERSION 3.13)
-project(SemVer)
+project(SemVer VERSION 0.1.0)
 
-add_library(SemVer
-    src/Version.cpp
-    src/VersionRange.cpp
+configure_file(include/SemVer/VersionNumbers.h.in include/SemVer/VersionNumbers.h)
+add_library(SemVer)
+target_sources(SemVer
+    PRIVATE
+        src/Version.cpp
+        src/VersionRange.cpp
 )
 target_compile_features(SemVer PUBLIC cxx_std_14)
 target_include_directories(SemVer
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
 
@@ -42,6 +46,7 @@ endif()
 
 add_executable(semver-cl src/SemVerCL.cpp)
 target_compile_features(semver-cl PRIVATE cxx_std_14)
+target_link_libraries(semver-cl PRIVATE SemVer)
 
 option(ENABLE_TESTS "Exposes the black-box test suite" ON)
 if (ENABLE_TESTS)

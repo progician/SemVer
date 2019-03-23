@@ -3,6 +3,8 @@
 #include <string>
 #include <utility>
 
+#include "SemVer/VersionNumbers.h"
+
 namespace {
   using ArgumentRange = std::pair<const char**, const char**>;
   bool HasOption(ArgumentRange args, const char* option) {
@@ -23,7 +25,10 @@ int main(int argc, const char* argv[]) {
   }
 
   if (HasOption(sys_args, "--version")) {
-    std::cout << "0.1.0" << std::endl;
+    std::cout << SemVer::VersionMajor
+              << "." << SemVer::VersionMinor
+              << "." << SemVer::VersionPatch
+              << std::endl;
     return 0;
   }
 
