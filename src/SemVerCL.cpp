@@ -7,6 +7,7 @@
 
 #include "SemVer/Version.h"
 #include "SemVer/VersionNumbers.h"
+#include "SemVer/VersionRange.h"
 
 static const SemVer::Version SemVerProjectVersion{
   SemVer::VersionMajor, SemVer::VersionMinor, SemVer::VersionPatch
@@ -65,6 +66,21 @@ int main(int argc, const char* argv[]) {
         std::cout << v << std::endl;
       }
       return 0;
+    }
+    else if (std::string(argv[1]) == "range") {
+      if (argc < 3) {
+        std::cerr << "error: missing version range specification" << std::endl;
+        return 1;
+      }
+      auto const range = SemVer::RangeFrom(argv[2]);
+      bool const result = std::all_of(
+        argv + 3, argv + argc,
+        [&range](const char* version_string) {
+          auto const version = SemVer::From(version_string);
+          return SemVer::Match(version, range);
+        }
+      );
+      return result ? 0 : 2;
     }
   }
   catch (std::logic_error e) {
