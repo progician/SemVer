@@ -23,6 +23,24 @@ class OrderingByPrecedence(unittest.TestCase):
         command_args.extend(randomised_versions)
         _, output_lines, _ = exec_cli(command_args)
         self.assertEqual(output_lines, ordered_versions)
+    
+
+    def test_any_bad_parsing_causes_error_message(self):
+        badly_written_versions = [
+            "1.0.0",
+            "2asf.0.0",
+            "2.1.0",
+            "2.1.1",
+            "3.0.0-alpha",
+            "3.0.0-beta",
+            "***---...3.0.0",
+        ]
+        command_args = ["order"]
+        command_args.extend(badly_written_versions)
+        exit_code, _, error_lines = exec_cli(command_args)
+        self.assertNotEqual(exit_code, 0)
+        self.assertTrue(find_in_any_lines(re.compile("^error:.*"), error_lines))
+
 
 if __name__ == "__main__":
     test_main()
