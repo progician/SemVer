@@ -23,6 +23,8 @@ settings = {}
 def exec_cli(args):
     command = [settings["semver-cli-exec"]]
     command.extend(args)
+    if settings.get("semver-verbosity", "quiet") == "verbose":
+        print("+" + str(command))
     completed = subprocess.run(
         command,
         encoding=locale.getpreferredencoding(),
@@ -30,6 +32,8 @@ def exec_cli(args):
         stdout=subprocess.PIPE
     )
     output_lines = str(completed.stdout).split('\n')
+    if output_lines[-1] == "":
+        output_lines.pop()
     error_lines = str(completed.stderr).split('\n')
     return completed.returncode, output_lines, error_lines
 

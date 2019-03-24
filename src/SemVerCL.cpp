@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <set>
 #include <string>
 #include <utility>
 
@@ -50,6 +51,17 @@ int main(int argc, const char* argv[]) {
               << "." << SemVer::VersionMinor
               << "." << SemVer::VersionPatch
               << std::endl;
+    return 0;
+  }
+
+  if (std::string(argv[1]) == "order") {
+    std::multiset<SemVer::Version> parsed_versions;
+    for (int argument = 2; argument < argc; argument++) {
+      parsed_versions.insert(SemVer::From(argv[argument]));
+    }
+    for (auto const& v : parsed_versions) {
+      std::cout << v << std::endl;
+    }
     return 0;
   }
 
