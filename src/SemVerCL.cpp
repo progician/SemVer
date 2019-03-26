@@ -30,7 +30,13 @@ namespace {
            << "        Print the version number of SemVer." << std::endl
            << "commands:" << std::endl
            << "    order [ARGS]" << std::endl
-           << "        sort the rest of the arguments in precedence order or the STDIN" << std::endl
+           << "        sort the rest of the arguments in precedence order or"
+              " the standard input" << std::endl
+           << "    match VERSION_RANGE [ARGS]" << std::endl
+           << "        use the VERSION_RANGE to match against the rest of the arguments"
+              " in precedence order or the standard input" << std::endl
+           << "        All the matching version will be listed in the output."
+           << std::endl
     ;
   }
 }
@@ -67,20 +73,22 @@ int main(int argc, const char* argv[]) {
       }
       return 0;
     }
-    else if (std::string(argv[1]) == "range") {
+    else if (std::string(argv[1]) == "match") {
       if (argc < 3) {
         std::cerr << "error: missing version range specification" << std::endl;
         return 1;
       }
+
       auto const range = SemVer::RangeFrom(argv[2]);
-      bool const result = std::all_of(
-        argv + 3, argv + argc,
-        [&range](const char* version_string) {
-          auto const version = SemVer::From(version_string);
-          return SemVer::Match(version, range);
-        }
+      std::copy_if(
+          argv + 3, argv + argc,
+          std::ostream_iterator<const char*>(std::cout, "\n"),
+          [&range](const char* argument) {
+            auto const version = SemVer::From(argument);
+            return SemVer::Match(version, range);
+          }
       );
-      return result ? 0 : 2;
+      return 0;
     }
   }
   catch (std::logic_error e) {
