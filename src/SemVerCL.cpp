@@ -65,12 +65,15 @@ int main(int argc, const char* argv[]) {
   try {
     if (std::string(argv[1]) == "order") {
       std::multiset<SemVer::Version> parsed_versions;
-      for (int argument = 2; argument < argc; argument++) {
-        parsed_versions.insert(SemVer::From(argv[argument]));
-      }
-      for (auto const& v : parsed_versions) {
-        std::cout << v << std::endl;
-      }
+      std::transform(
+          argv + 2, argv + argc,
+          std::inserter(parsed_versions, std::end(parsed_versions)),
+          [](const char* argument) { return SemVer::From(argument); }
+      );
+      std::copy(
+          std::begin(parsed_versions), std::end(parsed_versions),
+          std::ostream_iterator<SemVer::Version>(std::cout, "\n")
+      );
       return 0;
     }
     else if (std::string(argv[1]) == "match") {
