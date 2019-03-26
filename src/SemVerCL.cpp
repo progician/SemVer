@@ -13,32 +13,62 @@ static const SemVer::Version SemVerProjectVersion{
   SemVer::VersionMajor, SemVer::VersionMinor, SemVer::VersionPatch
 };
 
-namespace {
-  using ArgumentRange = std::pair<const char**, const char**>;
-  bool HasOption(ArgumentRange args, const char* option) {
-    return std::find(args.first, args.second, std::string(option)) != args.second;
-  }
 
-  void PrintUsage(std::string const& executable_name, std::ostream& target) {
-    target << "semver-cl " << SemVerProjectVersion << std::endl
-           << "  Simple command line client front end for semantic version processing." << std::endl
-           << "usage: " << executable_name << " [OPTS] COMMAND [ARGS]" << std::endl
-           << "options:" << std::endl
-           << "    -h, --help" << std::endl
-           << "        Print this help screen." << std::endl
-           << "    -v, --version" << std::endl
-           << "        Print the version number of SemVer." << std::endl
-           << "commands:" << std::endl
-           << "    order [ARGS]" << std::endl
-           << "        sort the rest of the arguments in precedence order or"
-              " the standard input" << std::endl
-           << "    match VERSION_RANGE [ARGS]" << std::endl
-           << "        use the VERSION_RANGE to match against the rest of the arguments"
-              " in precedence order or the standard input" << std::endl
-           << "        All the matching version will be listed in the output."
-           << std::endl
-    ;
-  }
+using ArgumentRange = std::pair<const char**, const char**>;
+bool HasOption(ArgumentRange args, const char* option) {
+  return std::find(args.first, args.second, std::string(option)) != args.second;
+}
+
+
+void PrintUsage(std::string const& executable_name, std::ostream& target) {
+  target << "semver-cl " << SemVerProjectVersion << std::endl
+          << "  Simple command line client front end for semantic version processing." << std::endl
+          << "usage: " << executable_name << " [OPTS] COMMAND [ARGS]" << std::endl
+          << "options:" << std::endl
+          << "    -h, --help" << std::endl
+          << "        Print this help screen." << std::endl
+          << "    -v, --version" << std::endl
+          << "        Print the version number of SemVer." << std::endl
+          << "commands:" << std::endl
+          << "    order [ARGS]" << std::endl
+          << "        sort the rest of the arguments in precedence order or"
+            " the standard input" << std::endl
+          << "    match VERSION_RANGE [ARGS]" << std::endl
+          << "        use the VERSION_RANGE to match against the rest of the arguments"
+            " in precedence order or the standard input" << std::endl
+          << "        All the matching version will be listed in the output."
+          << std::endl
+  ;
+}
+
+
+void OrderVersions(ArgumentRange args) {
+  std::multiset<SemVer::Version> parsed_versions;
+  std::transform(
+      args.first, args.second,
+      std::inserter(parsed_versions, std::end(parsed_versions)),
+      [](const char* argument) { return SemVer::From(argument); }
+  );
+  std::copy(
+      std::begin(parsed_versions), std::end(parsed_versions),
+      std::ostream_iterator<SemVer::Version>(std::cout, "\n")
+  );
+}
+
+
+void FilterMatches(ArgumentRange args) {
+  if (args.second - args.first < 2)
+    throw std::invalid_argument("missing version range specification");
+
+  auto const range = SemVer::RangeFrom(args.first[0]);
+  std::copy_if(
+      args.first + 1, args.second,
+      std::ostream_iterator<const char*>(std::cout, "\n"),
+      [&range](const char* argument) {
+        auto const version = SemVer::From(argument);
+        return SemVer::Match(version, range);
+      }
+  );
 }
 
 
@@ -64,37 +94,15 @@ int main(int argc, const char* argv[]) {
 
   try {
     if (std::string(argv[1]) == "order") {
-      std::multiset<SemVer::Version> parsed_versions;
-      std::transform(
-          argv + 2, argv + argc,
-          std::inserter(parsed_versions, std::end(parsed_versions)),
-          [](const char* argument) { return SemVer::From(argument); }
-      );
-      std::copy(
-          std::begin(parsed_versions), std::end(parsed_versions),
-          std::ostream_iterator<SemVer::Version>(std::cout, "\n")
-      );
+      OrderVersions(ArgumentRange{argv + 2, argv + argc});
       return 0;
     }
     else if (std::string(argv[1]) == "match") {
-      if (argc < 3) {
-        std::cerr << "error: missing version range specification" << std::endl;
-        return 1;
-      }
-
-      auto const range = SemVer::RangeFrom(argv[2]);
-      std::copy_if(
-          argv + 3, argv + argc,
-          std::ostream_iterator<const char*>(std::cout, "\n"),
-          [&range](const char* argument) {
-            auto const version = SemVer::From(argument);
-            return SemVer::Match(version, range);
-          }
-      );
+      FilterMatches(ArgumentRange{argv + 2, argv + argc});
       return 0;
     }
   }
-  catch (std::logic_error e) {
+  catch (std::exception e) {
     std::cerr << "error: " << e.what() << std::endl;
     return 1;
   }
