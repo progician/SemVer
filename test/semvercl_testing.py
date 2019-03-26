@@ -45,5 +45,5 @@ def find_in_any_lines(pattern, lines):
 
 def test_main():
     global settings
-    settings = _strip_test_suite_args(sys.argv, ["semver-cli-exec"])
+    settings = _strip_test_suite_args(sys.argv, ["semver-cli-exec", "semver-verbosity"])
     unittest.main()
