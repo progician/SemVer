@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <map>
 #include <set>
 #include <stdexcept>
 #include <string>
@@ -72,13 +73,14 @@ void FilterMatches(ArgumentRange args) {
 }
 
 
+const std::map<std::string, std::function<void(ArgumentRange)>> Commands{
+  {"order", OrderVersions},
+  {"match", FilterMatches},
+};
+
+
 int main(int argc, const char* argv[]) {
   ArgumentRange sys_args(argv, argv + argc);
-  if (argc < 2) {
-    std::cerr << "error: command required, please use --help" << std::endl;
-    return 1;
-  }
-
   if (HasOption(sys_args, "--help")) {
     PrintUsage(argv[0], std::cout);
     return 0;
@@ -93,20 +95,19 @@ int main(int argc, const char* argv[]) {
   }
 
   try {
-    if (std::string(argv[1]) == "order") {
-      OrderVersions(ArgumentRange{argv + 2, argv + argc});
-      return 0;
-    }
-    else if (std::string(argv[1]) == "match") {
-      FilterMatches(ArgumentRange{argv + 2, argv + argc});
-      return 0;
-    }
+    if (argc < 2)
+      throw std::runtime_error("command required, please use --help");
+
+    auto command_function = Commands.find(std::string(argv[1]));
+    if (command_function == std::end(Commands))
+      throw std::runtime_error("unknown command");
+
+    command_function->second(ArgumentRange{argv + 2, argv + argc});
   }
-  catch (std::exception e) {
+  catch (std::exception const& e) {
     std::cerr << "error: " << e.what() << std::endl;
     return 1;
   }
 
-  std::cerr << "error: unknown command" << std::endl;
-  return 1;
+  return 0;
 }
