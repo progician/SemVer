@@ -12,8 +12,6 @@ namespace SemVer {
     using Meta = std::string;
     Meta const prerelease; 
     Meta const build;
-
-    std::string to_string() const;
   };
 
   bool operator<(Version const&, Version const&) noexcept;
@@ -21,6 +19,7 @@ namespace SemVer {
   bool operator<=(Version const&, Version const&) noexcept;
   bool operator!=(Version const&, Version const&) noexcept;
   std::ostream& operator<<(std::ostream&, Version const&);
+  std::string to_string(Version const&);
 
   /// Parsing up a string from a string. Failing to do so, throws
   /// runtime exception

@@ -35,32 +35,36 @@ TEST_CASE("Semantic versions can be compared") {
 TEST_CASE("Printing rules for version objects") {
   SECTION("always include the three main digits") {
     SemVer::Version only_digits{1, 2, 3};
-    REQUIRE(only_digits.to_string() == "1.2.3");
+    REQUIRE(SemVer::to_string(only_digits) == "1.2.3");
   }
 
   SECTION("prerelease is hyphenated") {
     SemVer::Version with_prerelease{1, 2, 3, "pre"};
-    REQUIRE(with_prerelease.to_string() == "1.2.3-pre");
+    REQUIRE(SemVer::to_string(with_prerelease) == "1.2.3-pre");
   }
 
   SECTION("build meta is with prefixed by + and comes immediately without prerelease") {
     SemVer::Version with_buildmeta{1, 2, 3, "", "build_numba"};
-    REQUIRE(with_buildmeta.to_string() == "1.2.3+build_numba");
+    REQUIRE(SemVer::to_string(with_buildmeta) == "1.2.3+build_numba");
   }
 
   SECTION("build meta comes after the pre is exists") {
     SemVer::Version with_pre_and_meta{1, 2, 3, "alpha", "build_numba"};
-    REQUIRE(with_pre_and_meta.to_string() == "1.2.3-alpha+build_numba");
+    REQUIRE(SemVer::to_string(with_pre_and_meta) == "1.2.3-alpha+build_numba");
   }
 }
 
 TEST_CASE("Metadata role in version precedence") {
-  SECTION("pre-release meta data") {
+  SECTION("pre-release meta data takes precedence by ascending alphabetic order") {
     SemVer::Version alpha_prerelease{1, 2, 3, "alpha"};
-    SECTION("takes precedence by ascending alphabetic order of identifier") {
-      REQUIRE(alpha_prerelease < SemVer::Version{1, 2, 3, "beta"});
-    }
+    REQUIRE(alpha_prerelease < SemVer::Version{1, 2, 3, "beta"});
   }
+  SECTION("build meta data does not count in precedence") {
+    SemVer::Version some_meta{1, 2, 3, "", "alpha"};
+    SemVer::Version other_meta{1, 2, 3, "", "beta"};
+    REQUIRE_FALSE(some_meta < other_meta);
+    REQUIRE_FALSE(other_meta < some_meta);
+ }
 }
 
 

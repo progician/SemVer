@@ -74,10 +74,10 @@ namespace SemVer {
     return ostr;
   }
 
-  std::string Version::to_string() const {
-    std::stringstream string_stream;
-    string_stream << *this;
-    return string_stream.str();
+  std::string to_string(Version const& v) {
+    std::stringstream stream;
+    stream << v;
+    return stream.str();
   }
 
   Version From(std::string const& str) {
