@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 from semvercl_testing import exec_any_cli, find_in_any_lines
-import pytest, random, re
+import pytest
+import random
+import re
+
 
 def test_command_is_documented(semver_exec):
     _, output_lines, _ = exec_any_cli(semver_exec, ["--help"])
     assert find_in_any_lines("^\\s+order", output_lines)
+
 
 def test_order_arguments(semver_exec):
     ordered_versions = [

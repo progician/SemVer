@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 from semvercl_testing import exec_any_cli, find_in_any_lines
-import pytest, re
+import pytest
+import re
 
 abitrary_range = ">=1.0.0"
 semver_command = "match"
+
 
 def test_command_is_documented(semver_exec):
     _, output_lines, _ = exec_any_cli(semver_exec, ["--help"])
@@ -61,5 +63,5 @@ def test_fails_with_invalid_version_strings(semver_exec):
     ]
     command_args = [semver_command, abitrary_range]
     command_args.extend(some_is_invalid)
-    exit_code, _, error_lines = exec_any_cli(semver_exec, command_args)
+    exit_code, _, _ = exec_any_cli(semver_exec, command_args)
     assert exit_code == 1
