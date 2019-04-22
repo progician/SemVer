@@ -50,18 +50,11 @@ target_link_libraries(semver-cl PRIVATE SemVer)
 
 option(ENABLE_TESTS "Exposes the black-box test suite" ON)
 if (ENABLE_TESTS)
-    find_package(Python REQUIRED)
-    enable_testing()
-    function(add_py_test TEST_NAME TEST_SCRIPT)
-        add_test(
-            NAME ${TEST_NAME}
-            COMMAND Python::Interpreter ${CMAKE_CURRENT_SOURCE_DIR}/${TEST_SCRIPT} --semver-cli-exec=$<TARGET_FILE:semver-cl>
-        )
-    endfunction()
-
-    add_py_test(command_line_options test/test_command_line_options.py)
-    add_py_test(ordering_by_precedence test/test_ordering_by_precedence.py)
-    add_py_test(version_range_check test/test_version_ranges.py)
+    add_custom_target(test
+        COMMAND python -m pytest -q
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+        COMMENT Running functional test suite
+    )
 endif()
 
 install(
