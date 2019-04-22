@@ -59,9 +59,9 @@ if (ENABLE_TESTS)
         )
     endfunction()
 
-    add_py_test(command_line_options test/cli_options.py)
-    add_py_test(ordering_by_precedence test/ordering_by_precedence.py)
-    add_py_test(version_range_check test/version_range_check.py)
+    add_py_test(command_line_options test/test_command_line_options.py)
+    add_py_test(ordering_by_precedence test/test_ordering_by_precedence.py)
+    add_py_test(version_range_check test/test_version_ranges.py)
 endif()
 
 install(
