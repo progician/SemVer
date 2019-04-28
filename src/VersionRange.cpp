@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <iterator>
 
 namespace {
   bool SemanticEqual(
