@@ -50,7 +50,7 @@ void OrderVersions(ArgumentRange args) {
   std::transform(
       args.first, args.second,
       std::inserter(parsed_versions, std::end(parsed_versions)),
-      [](const char* argument) { return SemVer::From(argument); }
+      SemVer::From
   );
   std::copy(
       std::begin(parsed_versions), std::end(parsed_versions),
@@ -75,7 +75,8 @@ void FilterMatches(ArgumentRange args) {
 }
 
 
-const std::map<std::string, std::function<void(ArgumentRange)>> Commands{
+using CommandFunction = std::function<void(ArgumentRange)>;
+const std::map<std::string, CommandFunction> Commands{
   {"order", OrderVersions},
   {"match", FilterMatches},
 };
