@@ -29,6 +29,6 @@ install:
 
 script:
   - conan install -if build . --build=missing
-  - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild .
+  - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DCMAKE_PROJECT_SemVer_INCLUDE=$(pwd)/build/conan_paths.cmake .
   - cmake --build build
   - cmake --build build --target test
