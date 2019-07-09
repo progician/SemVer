@@ -1,4 +1,4 @@
-# SemVer
+# SemVer [![Build Status](https://travis-ci.org/progician/SemVer.svg?branch=master)](https://travis-ci.org/progician/SemVer)
 
 A simple C++ library for handling semantic version numbers.
 
