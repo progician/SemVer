@@ -15,20 +15,21 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
 
-    - os: osx
-      osx_image: xcode10.1
-      env:
-        - MATRIX_EVAL="PATH=$HOME/Library/Python/2.7/bin:$PATH && CC=clang && CXX=clang++"
+#    - os: osx
+#      osx_image: xcode10.1
+#      env:
+#        - MATRIX_EVAL="PATH=$HOME/Library/Python/2.7/bin:$PATH && CC=clang && CXX=clang++"
 
 before_install:
     - eval "${MATRIX_EVAL}"
 
 install:
-  - pip install --user -U pip
-  - pip install --user cmake ninja conan pytest
+  - pyenv versions
+  - pyenv shell 3.7 && pip3 install --user -U pip
+  - pyenv shell 3.7 && pip3 install --user cmake ninja conan pytest
 
 script:
-  - conan install -if build . --build=missing
-  - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DCMAKE_PROJECT_SemVer_INCLUDE=$(pwd)/build/conan_paths.cmake .
-  - cmake --build build
-  - cmake --build build --target test
+  - pyenv shell 3.7 && conan install -if build . --build=missing
+  - pyenv shell 3.7 && cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DCMAKE_PROJECT_SemVer_INCLUDE=$(pwd)/build/conan_paths.cmake .
+  - pyenv shell 3.7 && cmake --build build
+  - pyenv shell 3.7 && cmake --build build --target test
