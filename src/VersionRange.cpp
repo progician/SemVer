@@ -5,6 +5,8 @@
 #include <sstream>
 #include <iterator>
 
+#include <cassert>
+
 namespace {
   bool SemanticEqual(
       SemVer::Version const& lhs,
@@ -26,6 +28,10 @@ namespace SemVer {
       case Comparator::Type::Less: return version < against.operand;
       case Comparator::Type::LessEqual: return version <= against.operand;
       case Comparator::Type::Equal: return SemanticEqual(version, against.operand);
+      default: {
+        assert(false && "Unkown comparator type!");
+        return false;
+      }
     }
   }
 

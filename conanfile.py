@@ -3,7 +3,6 @@ import os
 
 class SemVer(ConanFile):
     name = "SemVer"
-    version = "0.1.0"
     description = "C++ library and command line tool to work with Semantic Versioning"
     author = "Gyula Gubacsi <gyula.gubacsi@gmail.com>"
     license = "General Public License 2.0"

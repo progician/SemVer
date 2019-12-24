@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
 project(SemVer VERSION 0.1.0)
 
+message(STATUS "prefix path: ${CMAKE_PREFIX_PATH}")
+
 configure_file(include/SemVer/VersionNumbers.h.in include/SemVer/VersionNumbers.h)
 add_library(SemVer)
 target_sources(SemVer
@@ -9,6 +11,7 @@ target_sources(SemVer
         src/VersionRange.cpp
 )
 target_compile_features(SemVer PUBLIC cxx_std_14)
+target_compile_options(SemVer PRIVATE -Wall -Wextra -Wpedantic -Werror)
 target_include_directories(SemVer
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -32,6 +35,8 @@ if (ENABLE_UNITTESTS)
         src/VersionRange.Test.cpp
     )
     target_link_libraries(SemVer.UT PRIVATE CatchTestMain SemVer)
+    target_compile_options(SemVer.UT PRIVATE -Wall -Wextra -Wpedantic -Werror)
+
 
     if (ENABLE_UNITTESTS_IN_BUILD)
         add_custom_command(

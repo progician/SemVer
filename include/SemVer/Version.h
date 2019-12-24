@@ -10,8 +10,24 @@ namespace SemVer {
     int const patch;
 
     using Meta = std::string;
-    Meta const prerelease; 
+    Meta const prerelease;
     Meta const build;
+
+    Version(int maj, int min) : major{maj}, minor{min}, patch{0} {}
+    Version(int maj, int min, int p) : major{maj}, minor{min}, patch{p} {}
+    
+    Version(int maj, int min, int p, Meta pr)
+        : major{maj}
+        , minor{min}
+        , patch{p}
+        , prerelease{std::move(pr)} {}
+
+    Version(int maj, int min, int p, Meta pr, Meta b)
+        : major{maj}
+        , minor{min}
+        , patch{p}
+        , prerelease{std::move(pr)}
+        , build{std::move(b)} {}
   };
 
   bool operator<(Version const&, Version const&) noexcept;
