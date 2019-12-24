@@ -24,12 +24,11 @@ before_install:
     - eval "${MATRIX_EVAL}"
 
 install:
-  - pyenv versions
   - pyenv shell 3.7 && pip3 install --user -U pip
   - pyenv shell 3.7 && pip3 install --user cmake ninja conan pytest
 
 script:
   - pyenv shell 3.7 && conan install -if build . --build=missing
   - pyenv shell 3.7 && cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DCMAKE_PROJECT_SemVer_INCLUDE=$(pwd)/build/conan_paths.cmake .
-  - pyenv shell 3.7 && cmake --build build
-  - pyenv shell 3.7 && cmake --build build --target test
+  - pyenv shell 3.7 && cmake --build build --target check-unit
+  - pyenv shell 3.7 && cmake --build build --target check-functional
