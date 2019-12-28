@@ -28,6 +28,8 @@ class SemVer(ConanFile):
     }
     default_options = {"shared": True, "debug_info": False}
 
+    exports_sources = "CMakeLists.txt", "include/*", "src/*", "SemVerConfig.cmake"
+
     def configure(self):
         if self.settings.build_type != "Release":
             self.options.debug_info = False
