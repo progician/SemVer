@@ -127,10 +127,11 @@ before_install:
   
 install:
   - pip install cmake ninja conan pytest
-  - conan install -if build -g cmake_paths --build=missing .
-  - cat build/conan_paths.cmake
+  #- conan install -if build -g cmake_paths --build=missing .
+  #- cat build/conan_paths.cmake
 
 script:
+  - conan install -if build -g cmake_paths --build=missing .
   - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DENABLE_UNITTESTS_IN_BUILD=OFF -DCMAKE_PROJECT_INCLUDE=build/conan_paths.cmake .
   - cmake --build build --target check-unit
   - cmake --build build --target check-functional
