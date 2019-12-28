@@ -9,10 +9,10 @@ matrix:
       addons:
         apt:
           sources:
-            - llvm-toolchain-xenial
+            - llvm-toolchain-xenial-8
           packages:
-            - clang
-            - clang-tidy
+            - clang-8
+            - clang-tidy-8
       env:
         - MATRIX_EVAL="CC=clang && CXX=clang++"
       before_install:
