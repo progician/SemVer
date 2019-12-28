@@ -4,7 +4,32 @@ language: cpp
 
 matrix:
   include:
-    - os: linux
+    - stage: analysis
+      os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-xenial
+          packages:
+            - clang
+            - clang-tidy
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+      before_install:
+        - pyenv global 3.7.1
+        - eval "${MATRIX_EVAL}"
+      install:
+        - pip --version
+        - python -V
+        - pip install --upgrade pip
+        - pip install cmake ninja conan pytest
+      script:
+        - conan install -if build -g cmake_paths --build=missing .
+        - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DENABLE_TIDY=ON -DENABLE_UNITTESTS_IN_BUILD=OFF -DCMAKE_PROJECT_INCLUDE=build/conan_paths.cmake .
+        - cmake --build build --target tidy
+
+    - stage: test
+      os: linux
       addons:
         apt:
           sources:
@@ -15,9 +40,10 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
       before_install:
-        - pyenv global 3.7.1
+        - pyenv global 3.7.1        
 
-    - os: linux
+    - stage: test
+      os: linux
       addons:
         apt:
           sources:
@@ -29,7 +55,8 @@ matrix:
       before_install:
         - pyenv global 3.7.1
 
-    - os: osx
+    - stage: test
+      os: osx
       osx_image: xcode10.3
       env:
         - MATRIX_EVAL="CC=clang && CXX=clang++
