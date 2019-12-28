@@ -57,6 +57,21 @@ add_executable(semver-cl src/SemVerCL.cpp)
 target_compile_features(semver-cl PRIVATE cxx_std_14)
 target_link_libraries(semver-cl PRIVATE SemVer)
 
+option(ENABLE_TIDY "Enable clang-tidy target for statis analysis." ON)
+option(INCREMENTAL_TIDY "Run clang-tidy as part of the build process (recommended for local development)" ON)
+if (ENABLE_TIDY)
+    find_program(RUN_CLANG_TIDY_COMMAND NAMES run-clang-tidy DOC "Script executing clang-tidy on compiler command database.")
+    if (NOT RUN_CLANG_TIDY_COMMAND)
+        message(FATAL_ERROR "clang-tidy was not found!")
+    endif()
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    add_custom_target(tidy
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${RUN_CLANG_TIDY_COMMAND} -quiet
+        COMMENT "Running static analysis checks with ClangTidy"
+    )
+endif()
+
 option(ENABLE_TESTS "Exposes the black-box test suite" ON)
 if (ENABLE_TESTS)
     add_custom_target(check-functional

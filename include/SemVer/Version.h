@@ -15,7 +15,7 @@ namespace SemVer {
 
     Version(int maj, int min) : major{maj}, minor{min}, patch{0} {}
     Version(int maj, int min, int p) : major{maj}, minor{min}, patch{p} {}
-    
+
     Version(int maj, int min, int p, Meta pr)
         : major{maj}
         , minor{min}
@@ -30,14 +30,14 @@ namespace SemVer {
         , build{std::move(b)} {}
   };
 
-  bool operator<(Version const&, Version const&) noexcept;
-  bool operator==(Version const&, Version const&) noexcept;
-  bool operator<=(Version const&, Version const&) noexcept;
-  bool operator!=(Version const&, Version const&) noexcept;
-  std::ostream& operator<<(std::ostream&, Version const&);
-  std::string to_string(Version const&);
+  auto operator<(Version const&, Version const&) noexcept -> bool;
+  auto operator==(Version const&, Version const&) noexcept -> bool;
+  auto operator<=(Version const&, Version const&) noexcept -> bool;
+  auto operator!=(Version const&, Version const&) noexcept -> bool;
+  auto operator<<(std::ostream&, Version const&) -> std::ostream&;
+  auto to_string(Version const&) -> std::string;
 
   /// Parsing up a string from a string. Failing to do so, throws
   /// runtime exception
-  Version From(std::string const&);
+  auto From(std::string const&) -> Version;
 } // SemVer

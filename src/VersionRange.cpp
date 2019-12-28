@@ -8,10 +8,10 @@
 #include <cassert>
 
 namespace {
-  bool SemanticEqual(
+  auto SemanticEqual(
       SemVer::Version const& lhs,
       SemVer::Version const& rhs
-  ) noexcept {
+  ) noexcept -> bool {
     return lhs.major == rhs.major
         && lhs.minor == rhs.minor
         && lhs.patch == rhs.patch
@@ -21,7 +21,7 @@ namespace {
 }
 
 namespace SemVer {
-  bool Match(Version const& version, Comparator const& against) noexcept {
+  auto Match(Version const& version, Comparator const& against) noexcept -> bool {
     switch(against.type) {
       case Comparator::Type::Greater: return against.operand < version;
       case Comparator::Type::GreaterEqual: return against.operand <= version;
@@ -36,7 +36,7 @@ namespace SemVer {
   }
 
 
-  bool Match(Version const& version, ComparatorSet const& against) noexcept {
+  auto Match(Version const& version, ComparatorSet const& against) noexcept -> bool {
     return std::all_of(
         std::begin(against), std::end(against),
         [&version](auto const& comparator) { return Match(version, comparator); }
@@ -44,7 +44,7 @@ namespace SemVer {
   }
 
 
-  bool Match(Version const& version, VersionRange const& against) noexcept {
+  auto Match(Version const& version, VersionRange const& against) noexcept -> bool{
     return std::any_of(
         std::begin(against), std::end(against),
         [&version](auto const& cset) { return Match(version, cset); }
@@ -53,16 +53,18 @@ namespace SemVer {
 
 
   namespace {
-    Comparator ComparatorFrom(std::string const& str) {
+    auto ComparatorFrom(std::string const& str) -> Comparator {
       if (str[0] == '>') {
         if (str[1] == '=') {
           return {Comparator::Type::GreaterEqual, From(str.substr(2))};
         }
         return {Comparator::Type::Greater, From(str.substr(1))};
       }
-      else if (str[0] == '=') {
+
+      if (str[0] == '=') {
         return {Comparator::Type::Equal, From(str.substr(1))};
       }
+
       if (str[0] == '<') {
         if (str[1] == '=') {
           return {Comparator::Type::LessEqual, From(str.substr(2))};
@@ -72,9 +74,9 @@ namespace SemVer {
       return {Comparator::Type::Equal, From(str)};
     }
 
-    ComparatorSet ComparatorSetFrom(std::string str) {
+    auto ComparatorSetFrom(std::string const& str) -> ComparatorSet {
       ComparatorSet result;
-      std::istringstream sstr(std::move(str));
+      std::istringstream sstr(str);
       std::transform(
           std::istream_iterator<std::string>(sstr),
           std::istream_iterator<std::string>(),
@@ -85,7 +87,7 @@ namespace SemVer {
     }
 
 
-    std::vector<std::string> Split(std::string str, std::string const& delim) {
+    auto Split(std::string const& str, std::string const& delim) -> std::vector<std::string> {
       std::vector<std::string> result;
       std::string::size_type lp = 0;
       std::string::size_type pos = std::string::npos;
@@ -103,7 +105,7 @@ namespace SemVer {
   }
 
 
-  VersionRange RangeFrom(std::string const& str) {
+  auto RangeFrom(std::string const& str) -> VersionRange {
     auto const parts = Split(str, "||");
     VersionRange version_range;
     std::transform(

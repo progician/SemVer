@@ -18,7 +18,7 @@ static const SemVer::Version SemVerProjectVersion{
 
 
 using ArgumentRange = std::pair<const char**, const char**>;
-bool HasOption(ArgumentRange args, const char* option) {
+auto HasOption(ArgumentRange args, const char* option) -> bool{
   return std::find(args.first, args.second, std::string(option)) != args.second;
 }
 
@@ -76,13 +76,13 @@ void FilterMatches(ArgumentRange args) {
 
 
 using CommandFunction = std::function<void(ArgumentRange)>;
-const std::map<std::string, CommandFunction> Commands{
+const auto Commands = std::map<std::string, CommandFunction>{
   {"order", OrderVersions},
   {"match", FilterMatches},
 };
 
 
-int main(int argc, const char* argv[]) {
+auto main(int argc, const char* argv[]) -> int {
   ArgumentRange sys_args(argv, argv + argc);
   if (HasOption(sys_args, "--help")) {
     PrintUsage(argv[0], std::cout);

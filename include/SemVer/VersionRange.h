@@ -32,11 +32,11 @@ namespace SemVer {
   /// ComparatorSets with 'OR' as in union relationship between them.
   using VersionRange = std::vector<ComparatorSet>;
 
-  bool Match(Version const&, Comparator const&) noexcept;
-  bool Match(Version const&, ComparatorSet const&) noexcept;
-  bool Match(Version const&, VersionRange const&) noexcept;
+  auto Match(Version const&, Comparator const&) noexcept -> bool;
+  auto Match(Version const&, ComparatorSet const&) noexcept -> bool;
+  auto Match(Version const&, VersionRange const&) noexcept -> bool;
 
   /// Parses up the string into a version range object. If the expression is not
   /// valid, it throws a std::invalid_argument exception.
-  VersionRange RangeFrom(std::string const&);
+  auto RangeFrom(std::string const&) -> VersionRange;
 } // SemVer

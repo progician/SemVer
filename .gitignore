@@ -1,4 +1,7 @@
 build/
+rel/
+deb/
+tidy/
 env/
 .conan/
 .vscode/

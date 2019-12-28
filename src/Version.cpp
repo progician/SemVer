@@ -4,39 +4,39 @@
 #include <regex>
 
 namespace SemVer {
-  bool operator<(Version const& lhs, Version const& rhs) noexcept {
+  auto operator<(Version const& lhs, Version const& rhs) noexcept -> bool {
     if (lhs.major < rhs.major) {
       return true;
     }
-    else if (rhs.major < lhs.major) {
+    if (rhs.major < lhs.major) {
       return false;
     }
 
     if (lhs.minor < rhs.minor) {
       return true;
     }
-    else if (rhs.minor < lhs.minor) {
+    if (rhs.minor < lhs.minor) {
       return false;
     }
 
     if (lhs.patch < rhs.patch) {
       return true;
     }
-    else if (rhs.patch < lhs.patch) {
+    if (rhs.patch < lhs.patch) {
       return false;
     }
 
     if (lhs.prerelease.empty() && !rhs.prerelease.empty()) {
       return false;
     }
-    else if (!lhs.prerelease.empty() && rhs.prerelease.empty()) {
+    if (!lhs.prerelease.empty() && rhs.prerelease.empty()) {
       return true;
     }
 
     return lhs.prerelease < rhs.prerelease;
   }
 
-  bool operator==(Version const& lhs, Version const& rhs) noexcept {
+  auto operator==(Version const& lhs, Version const& rhs) noexcept -> bool {
     return
       lhs.major == rhs.major &&
       lhs.minor == rhs.minor &&
@@ -46,7 +46,7 @@ namespace SemVer {
     ;
   }
 
-  bool operator!=(Version const& lhs, Version const& rhs) noexcept {
+  auto operator!=(Version const& lhs, Version const& rhs) noexcept -> bool {
     return
       lhs.major != rhs.major ||
       lhs.minor != rhs.minor ||
@@ -57,11 +57,11 @@ namespace SemVer {
   }
 
 
-  bool operator<=(Version const& lhs, Version const& rhs) noexcept {
+  auto operator<=(Version const& lhs, Version const& rhs) noexcept -> bool {
     return lhs < rhs || lhs == rhs;
   }
 
-  std::ostream& operator <<(std::ostream& ostr, SemVer::Version const& v) {
+  auto operator <<(std::ostream& ostr, SemVer::Version const& v) -> std::ostream& {
     ostr << v.major << ".";
     ostr << v.minor << ".";
     ostr << v.patch;
@@ -74,13 +74,13 @@ namespace SemVer {
     return ostr;
   }
 
-  std::string to_string(Version const& v) {
+  auto to_string(Version const& v) -> std::string {
     std::stringstream stream;
     stream << v;
     return stream.str();
   }
 
-  Version From(std::string const& str) {
+  auto From(std::string const& str) -> Version {
     const std::regex parser(R"((\d*)(\.(\d*))?(\.(\d*))?(-([a-zA-Z0-9\-][\dA-Za-z\-\.]*))?(\+([a-zA-Z0-9][\dA-Za-z\-\.]*))?)");
     std::smatch parts;
     if (!std::regex_match(str, parts, parser) || parts.size() < 2) {
