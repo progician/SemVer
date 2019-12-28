@@ -120,6 +120,7 @@ matrix:
       script:
         - python tools/conan/build.py
 
+# common test stage commands
 before_install:
     - eval "${MATRIX_EVAL}"
     - pip install --upgrade pip
@@ -127,6 +128,7 @@ before_install:
 install:
   - pip install cmake ninja conan pytest
   - conan install -if build -g cmake_paths --build=missing .
+  - cat build/conan_paths.cmake
 
 script:
   - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DENABLE_UNITTESTS_IN_BUILD=OFF -DCMAKE_PROJECT_INCLUDE=build/conan_paths.cmake .
