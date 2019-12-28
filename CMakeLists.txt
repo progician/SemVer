@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 project(SemVer VERSION 0.1.0)
 
-message(STATUS "prefix path: ${CMAKE_PREFIX_PATH}")
-
 configure_file(include/SemVer/VersionNumbers.h.in include/SemVer/VersionNumbers.h)
 add_library(SemVer)
 target_sources(SemVer
