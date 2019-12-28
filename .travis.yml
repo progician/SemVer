@@ -2,9 +2,13 @@ dist: xenial
 sudo: required
 language: cpp
 
+stages:
+  - Analyse
+  - Test
+
 matrix:
   include:
-    - stage: analysis
+    - stage: Analyse
       os: linux
       addons:
         apt:
@@ -28,7 +32,7 @@ matrix:
         - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DENABLE_TIDY=ON -DENABLE_UNITTESTS_IN_BUILD=OFF -DCMAKE_PROJECT_INCLUDE=build/conan_paths.cmake .
         - cmake --build build --target tidy
 
-    - stage: test
+    - stage: Test
       os: linux
       addons:
         apt:
@@ -42,7 +46,7 @@ matrix:
       before_install:
         - pyenv global 3.7.1        
 
-    - stage: test
+    - stage: Test
       os: linux
       addons:
         apt:
@@ -55,7 +59,7 @@ matrix:
       before_install:
         - pyenv global 3.7.1
 
-    - stage: test
+    - stage: Test
       os: osx
       osx_image: xcode10.3
       env:
