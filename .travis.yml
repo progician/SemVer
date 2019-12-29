@@ -8,6 +8,19 @@ stages:
   - Deploy
 
 
+_linux_deploy: &_linux_deploy
+  - stage: Deploy
+    os: linux
+    dist: bionic
+    services: docker
+    python: "3.7"
+    language: python
+    install:
+      - pip install conan --upgrade
+      - pip install conan_package_tools
+      - conan user
+    script:
+      - python tools/conan/build.py
 
 matrix:
   include:
@@ -67,7 +80,7 @@ matrix:
       os: osx
       osx_image: xcode10.3
       env:
-        - MATRIX_EVAL="CC=clang && CXX=clang++
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
       before_install:
         - which python3
         - python3 -V
@@ -75,50 +88,9 @@ matrix:
         - ln -sfn "$(which pip3)" /usr/local/bin/pip
         - python -V
 
-
-    - stage: Deploy
-      os: osx
-      osx_image: xcode10.3
-      env: CONAN_APPLE_CLANG_VERSIONS=10.0
-      before_install:
-        - which python3
-        - python3 -V
-        - ln -sfn "$(which python3)" /usr/local/bin/python
-        - ln -sfn "$(which pip3)" /usr/local/bin/pip
-        - python -V
-      install:
-        - pip install cmake conan conan_package_tools
-      script:
-        - python tools/conan/build.py
-
-    - stage: Deploy
-      os: osx
-      osx_image: xcode9.4
-      env: CONAN_APPLE_CLANG_VERSIONS=9.0
-      before_install:
-        - which python3
-        - python3 -V
-        - ln -sfn "$(which python3)" /usr/local/bin/python
-        - ln -sfn "$(which pip3)" /usr/local/bin/pip
-        - python -V
-      install:
-        - pip install cmake ninja conan conan_package_tools
-      script:
-        - python tools/conan/build.py
-
-    - stage: Deploy
-      os: linux
-      dist: bionic
+    - <<: *_linux_deploy
       env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=conanio/gcc5 CONAN_ARCHS=x86_64
-      services: docker
-      python: "3.7"
-      language: python
-      install:
-        - pip install conan --upgrade
-        - pip install conan_package_tools
-        - conan user
-      script:
-        - python tools/conan/build.py
+
 
 # common test stage commands
 before_install:
@@ -127,11 +99,9 @@ before_install:
   
 install:
   - pip install cmake ninja conan pytest
-  #- conan install -if build -g cmake_paths --build=missing .
-  #- cat build/conan_paths.cmake
+  - conan install -if build -g cmake_paths --build=missing .
 
 script:
-  - conan install -if build -g cmake_paths --build=missing .
   - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DENABLE_UNITTESTS_IN_BUILD=OFF -DCMAKE_PROJECT_SemVer_INCLUDE=build/conan_paths.cmake .
   - cmake --build build --target check-unit
   - cmake --build build --target check-functional
