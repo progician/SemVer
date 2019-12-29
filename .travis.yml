@@ -76,17 +76,17 @@ matrix:
       before_install:
         - pyenv global 3.7.1
 
-    - stage: Test
-      os: osx
-      osx_image: xcode10.3
-      env:
-        - MATRIX_EVAL="CC=clang && CXX=clang++"
-      before_install:
-        - which python3
-        - python3 -V
-        - ln -sfn "$(which python3)" /usr/local/bin/python
-        - ln -sfn "$(which pip3)" /usr/local/bin/pip
-        - python -V
+    # - stage: Test
+    #   os: osx
+    #   osx_image: xcode10.3
+    #   env:
+    #     - MATRIX_EVAL="CC=clang && CXX=clang++"
+    #   before_install:
+    #     - which python3
+    #     - python3 -V
+    #     - ln -sfn "$(which python3)" /usr/local/bin/python
+    #     - ln -sfn "$(which pip3)" /usr/local/bin/pip
+    #     - python -V
 
     - stage: Deploy
       <<: *linux_deploy
