@@ -90,4 +90,5 @@ install(
     RUNTIME DESTINATION bin
 )
 install(EXPORT SemVerTargets NAMESPACE SemVer:: DESTINATION cmake)
+install(FILES SemVerConfig.cmake DESTINATION cmake)
 install(DIRECTORY include/ DESTINATION include)
