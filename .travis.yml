@@ -59,9 +59,11 @@ matrix:
             - gcc-9
             - g++-9
       env:
-        - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+        - CC=gcc-9
+        - CXX=g++-9
       before_install:
         - pyenv global 3.7.1        
+
 
     - stage: Test
       os: linux
@@ -72,7 +74,8 @@ matrix:
           packages:
             - clang-8
       env:
-        - MATRIX_EVAL="CC=clang-8 && CXX=clang++-8"
+        - CC=clang-9
+        - CXX=clang++-9
       before_install:
         - pyenv global 3.7.1
 
@@ -102,7 +105,9 @@ install:
   - pip install cmake ninja conan pytest
 
 script:
+  - echo $CC
+  - echo $CXX
   - conan install -if build -g cmake_paths --build=missing .
-  - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DENABLE_UNITTESTS_IN_BUILD=OFF -DCMAKE_PROJECT_SemVer_INCLUDE=build/conan_paths.cmake .
+  - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -Bbuild -DENABLE_UNITTESTS_IN_BUILD=OFF -DCMAKE_PROJECT_SemVer_INCLUDE=build/conan_paths.cmake .
   - cmake --build build --target check-unit
   - cmake --build build --target check-functional
