@@ -8,19 +8,19 @@ stages:
   - Deploy
 
 
-_linux_deploy: &_linux_deploy
-  - stage: Deploy
-    os: linux
-    dist: bionic
-    services: docker
-    python: "3.7"
-    language: python
-    install:
-      - pip install conan --upgrade
-      - pip install conan_package_tools
-      - conan user
-    script:
-      - python tools/conan/build.py
+linux_deploy: &linux_deploy
+  os: linux
+  dist: bionic
+  services: docker
+  python: "3.7"
+  language: python
+  install:
+    - pip install conan --upgrade
+    - pip install conan_package_tools
+    - conan user
+  script:
+    - python tools/conan/build.py
+
 
 matrix:
   include:
@@ -88,7 +88,8 @@ matrix:
         - ln -sfn "$(which pip3)" /usr/local/bin/pip
         - python -V
 
-    - <<: *_linux_deploy
+    - stage: Deploy
+      <<: *linux_deploy
       env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=conanio/gcc5 CONAN_ARCHS=x86_64
 
 
