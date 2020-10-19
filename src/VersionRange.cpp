@@ -96,7 +96,7 @@ namespace SemVer {
           pos != std::string::npos;
           lp = pos + delim.size(), pos = str.find(delim, lp)
       ) {
-        std::string const part = str.substr(lp, pos - lp);
+        auto const part = str.substr(lp, pos - lp);
         result.push_back(part);
       }
       result.push_back(str.substr(lp));

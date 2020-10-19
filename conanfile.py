@@ -18,9 +18,9 @@ class SemVer(ConanFile):
     version = _get_version()
     license = "General Public License 2.0"
 
-    generators = "cmake_paths"
+    generators = "cmake_find_package"
     settings = "os", "arch", "compiler", "build_type"
-    build_requires = "Catch2/[^2.6.0]@catchorg/stable"
+    build_requires = "catch2/[^2.6.0]"
 
     options = {
         "shared": [True, False],
