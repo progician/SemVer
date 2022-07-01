@@ -1,21 +1,11 @@
 from conans import ConanFile, CMake, tools
-import os, re
-
-
-def _get_version():
-    try:
-        content = tools.load("CMakeLists.txt")
-        version = re.search(r"project\s*\(\s*SemVer\s+VERSION\s+(.*)\s*\)", content).group(1)
-        return version.strip()
-    except Exception:
-        return None
+import os
 
 
 class SemVer(ConanFile):
     name = "SemVer"
     description = "C++ library and command line tool to work with Semantic Versioning"
     author = "Gyula Gubacsi <gyula.gubacsi@gmail.com>"
-    version = _get_version()
     license = "General Public License 2.0"
 
     generators = "cmake_find_package"
