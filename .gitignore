@@ -6,6 +6,8 @@ env/
 .conan/
 .vscode/
 
+include/SemVer/VersionNumbers.h
+
 __pycache__/
 *.py[cod]
 *$py.class

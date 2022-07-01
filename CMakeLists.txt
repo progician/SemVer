@@ -1,5 +1,13 @@
 cmake_minimum_required(VERSION 3.13)
-project(SemVer VERSION 0.1.0)
+
+set(SEMVER_PROJECT_VERSION "0.1.0" CACHE STRING "Project version")
+if (SEMVER_PROJECT_VERSION MATCHES "(0|([1-9][0-9]*))\.(0|([1-9][0-9]*))\.(0|([1-9][0-9]*)).*")
+    set(SEMVER_PROJECT_VERSION "${CMAKE_MATCH_1}.${CMAKE_MATCH_3}.${CMAKE_MATCH_5}")
+    message(STATUS "Project version used is: ${SEMVER_PROJECT_VERSION}")
+else()
+    message(FATAL_ERROR "Version cannot be parsed!")
+endif()
+project(SemVer VERSION "${SEMVER_PROJECT_VERSION}")
 
 set(CMAKE_MODULE_PATH "${PROJECT_BINARY_DIR};${CMAKE_MODULE_PATH}")
 
