@@ -6,6 +6,24 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Print a greeting
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: latest
+          platform: x64
+      - name: Install tools
         run: |
-          echo "Hello, World!"
+          pip install --upgrade pip
+          pip install cmake ninja conan pytest
+      - name: Install dependencies
+        run: |
+          conan install -if build -g cmake_paths --build=missing .
+      - name: Configure
+        run: |
+          cmake -GNinja -DCMAKE_BUILD_TYPE=Release -Bbuild -DENABLE_UNITTESTS_IN_BUILD=OFF -DCMAKE_PROJECT_SemVer_INCLUDE=build/conan_paths.cmake .
+      - name: Run unit tests
+        run: |
+          cmake --build build --target check-unit
+      - name: Run functional tests
+        run: |
+          cmake --build build --target check-functional
